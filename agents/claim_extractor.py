@@ -1,7 +1,6 @@
-import spacy
+from models.nlp_model import get_nlp_model
 
-# Load NLP model
-nlp = spacy.load("en_core_web_sm")
+nlp = get_nlp_model()
 
 # ESG keywords
 ESG_KEYWORDS = [

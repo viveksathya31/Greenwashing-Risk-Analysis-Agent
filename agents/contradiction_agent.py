@@ -1,14 +1,10 @@
-from sentence_transformers import SentenceTransformer
+from models.embedding_model import get_embedding_model
 from sklearn.metrics.pairwise import cosine_similarity
 
-# Load embedding model
-model = SentenceTransformer("all-MiniLM-L6-v2")
+model = get_embedding_model()
 
 
 def detect_contradictions(claims, threshold=0.75):
-    """
-    Detect potential contradictions between ESG claims.
-    """
 
     contradictions = []
 
@@ -24,7 +20,6 @@ def detect_contradictions(claims, threshold=0.75):
                 [embeddings[i]], [embeddings[j]]
             )[0][0]
 
-            # If claims are very similar but contain different numbers → possible contradiction
             if similarity > threshold:
 
                 numbers_i = set(filter(str.isdigit, claims[i]))
