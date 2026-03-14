@@ -1,31 +1,22 @@
-from models.embedding_model import get_embedding_model
-from sklearn.metrics.pairwise import cosine_similarity
+from transformers import pipeline
 
-model = get_embedding_model()
+nli = pipeline("text-classification", model="facebook/bart-large-mnli")
 
 
-def detect_contradictions(claims, threshold=0.75):
+def detect_contradictions(claims):
 
     contradictions = []
-
-    if len(claims) < 2:
-        return contradictions
-
-    embeddings = model.encode(claims)
 
     for i in range(len(claims)):
         for j in range(i + 1, len(claims)):
 
-            similarity = cosine_similarity(
-                [embeddings[i]], [embeddings[j]]
-            )[0][0]
+            pair = claims[i] + " </s> " + claims[j]
 
-            if similarity > threshold:
+            result = nli(pair)
 
-                numbers_i = set(filter(str.isdigit, claims[i]))
-                numbers_j = set(filter(str.isdigit, claims[j]))
+            label = result[0]["label"]
 
-                if numbers_i != numbers_j:
-                    contradictions.append((claims[i], claims[j]))
+            if label == "CONTRADICTION":
+                contradictions.append((claims[i], claims[j]))
 
     return contradictions

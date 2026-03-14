@@ -1,22 +1,30 @@
+import re
+
 EVIDENCE_KEYWORDS = [
     "report",
-    "study",
+    "audit",
+    "verified",
+    "third-party",
+    "assurance",
+    "certified",
     "data",
-    "analysis",
-    "source",
-    "according to",
-    "research"
+    "study"
 ]
 
 
-def check_evidence(claim):
-    """
-    Detect if claim references evidence
-    """
+def check_evidence(claim, document_text):
 
-    claim_lower = claim.lower()
+    claim_words = claim.lower().split()
 
-    if any(word in claim_lower for word in EVIDENCE_KEYWORDS):
-        return "EVIDENCE_PRESENT"
+    for keyword in EVIDENCE_KEYWORDS:
+
+        if keyword in claim.lower():
+            return "EVIDENCE_PRESENT"
+
+    # search in whole document
+    for keyword in EVIDENCE_KEYWORDS:
+
+        if keyword in document_text.lower():
+            return "LIKELY_EVIDENCE"
 
     return "NO_EVIDENCE"
