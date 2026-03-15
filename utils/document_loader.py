@@ -5,10 +5,11 @@ import docx
 def load_pdf(file_path):
 
     reader = PdfReader(file_path)
-    text = ""
 
-    for page in reader.pages:
-        text += page.extract_text() + "\n"
+    text = "\n".join(
+        page.extract_text() or ""
+        for page in reader.pages
+    )
 
     return text
 
@@ -16,6 +17,7 @@ def load_pdf(file_path):
 def load_docx(file_path):
 
     doc = docx.Document(file_path)
+
     text = ""
 
     for para in doc.paragraphs:
@@ -26,7 +28,7 @@ def load_docx(file_path):
 
 def load_txt(file_path):
 
-    with open(file_path, "r") as f:
+    with open(file_path, "r", encoding="utf-8") as f:
         return f.read()
 
 
